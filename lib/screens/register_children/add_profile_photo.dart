@@ -13,10 +13,10 @@ class AddPhotoScreen extends StatefulWidget {
 
 class _AddPhotoScreenState extends State<AddPhotoScreen> {
   final picker = ImagePicker();
-  late String _imagePath;
+  late var _imagePath;
 
   Future pickImageFromGallery() async {
-    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       widget.onPhotoChanged(pickedFile.path);
@@ -29,49 +29,54 @@ class _AddPhotoScreenState extends State<AddPhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Add photo',
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  child: Stack(
-                    children: [
-                      Container(
-                        child: _imagePath == null
-                            ? ImagePortrait(imageType: ImageType.NONE, imagePath: _imagePath,)
-                            : ImagePortrait(
-                          imagePath: _imagePath,
-                          imageType: ImageType.FILE_IMAGE,
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: _imagePath == null
-                              ? IconButton(
-                                onPressed: pickImageFromGallery,
+    return FutureBuilder(
+      future: pickImageFromGallery(),
+      builder: (BuildContext, AsyncSnapshot) {
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Add photo',
+                style: Theme.of(context).textTheme.headline3,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      child: Stack(
+                        children: [
+                          Container(
+                            child: _imagePath == null
+                                ? ImagePortrait(imageType: ImageType.NONE, imagePath: '',)
+                                : ImagePortrait(
+                              imagePath: _imagePath,
+                              imageType: ImageType.FILE_IMAGE,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: _imagePath == null
+                                  ? IconButton(
+                                onPressed: () async => await pickImageFromGallery,
                                 icon: Icon(Icons.add),
                                 iconSize: 20,
-                          )
-                              : null,
-                        ),
+                              )
+                                  : null,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

@@ -14,6 +14,15 @@ class FirebaseDatabase {
         .set(tile.toMap());
   }
 
+  void updateTodoTile(TodoTile tile, String uid) {
+    instance
+        .collection('users')
+        .doc(uid)
+        .collection('tiles')
+        .doc(tile.id)
+        .set(tile.toMap());
+  }
+
   Future<QuerySnapshot> getToDoTiles(String uid) {
     return instance.collection('users').doc(uid).collection('tiles').get();
   }

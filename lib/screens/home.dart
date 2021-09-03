@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_list/data/models/todo_tile.dart';
+import 'package:todo_list/data/remote/firebase_auth.dart';
 import 'package:todo_list/data/remote/firebase_database.dart';
 import 'package:todo_list/screens/loading.dart';
 import 'package:todo_list/screens/login.dart';
@@ -15,13 +17,26 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   final controller = TextEditingController();
   bool loading = false;
-  final _datebaseSource = FirebaseDatabase();
+  final _databaseSource = FirebaseDatabase();
+  final _auth = FirebaseAuthSource();
   final FirebaseFirestore instance = FirebaseFirestore.instance;
+  late String _content;
 
   @override
   void initState() {
     super.initState();
     controller.addListener(() => setState(() {}));
+  }
+
+  String getTileUID() {
+    return _auth.instance.currentUser!.uid + _content.hashCode.toString();
+  }
+
+  void onPost() {
+    TodoTile tile = TodoTile(_content, getTileUID(), false);
+    _databaseSource.addTodoTile(tile, _auth.instance.currentUser!.uid);
+    setState(() {
+    });
   }
 
   @override
@@ -50,7 +65,7 @@ class _HomeState extends State<Home> {
                   child: TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                        hintText: 'enter..',
+                        hintText: 'What do you want To-Do?',
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.clear),
@@ -58,6 +73,7 @@ class _HomeState extends State<Home> {
                             controller.clear();
                           },
                         )),
+                    onChanged: (val) => _content = val,
                   ),
                 ),
                 Row(
@@ -66,12 +82,13 @@ class _HomeState extends State<Home> {
                     const Padding(
                       padding: EdgeInsets.all(15.0),
                     ),
-                    const ElevatedButton(
+                    ElevatedButton(
                       child: Text('P O S T'),
-                      onPressed: null,
+                      onPressed: onPost,
                     )
                   ],
-                )
+                ),
+                const SizedBox(height: 5),
               ],
             ),
           )

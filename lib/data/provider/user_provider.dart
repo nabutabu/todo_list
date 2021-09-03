@@ -48,11 +48,11 @@ class UserProvider extends ChangeNotifier {
             profilePhotoPath: profilePhotoUrl);
         _databaseSource.addUser(user);
         SharedPreferencesUtil.setUserId(id);
-        _user = _user;
+        _user = user;
         return Response.success(user);
       }
     }
-    if (response is Error) ; //print(response.message)
+    if (response is Error); //print(response.message)
     return response;
   }
 
