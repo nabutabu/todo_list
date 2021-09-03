@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:todo_list/data/models/todo_tile.dart';
 import 'package:todo_list/data/remote/firebase_database.dart';
 import 'package:todo_list/screens/loading.dart';
 import 'package:todo_list/screens/login.dart';
@@ -40,7 +39,7 @@ class _HomeState extends State<Home> {
         children: [
           Expanded(
             child: Container(
-              child: loading ? Loading() : CheckBoxList(),
+              child: loading ? Loading() : const CheckBoxList(),
             ),
           ),
           Container(

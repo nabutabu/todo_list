@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:todo_list/data/remote/response.dart';
 
@@ -15,7 +14,7 @@ class FirebaseStorageSource {
       String downloadUrl = await instance.ref(userPhotoPath).getDownloadURL();
       return Response.success(downloadUrl);
     } catch (e) {
-      return Response.error(((e as FirebaseException).message ?? e.toString()));
+      return Response.error(e.toString());
     }
   }
 }
